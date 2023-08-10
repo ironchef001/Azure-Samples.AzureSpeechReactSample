@@ -58,6 +58,7 @@ export default class App extends Component {
           this.sttFromMicCore(recognizer, stopTime);
         }else {
             console.log(`Error: Timed out,  ${Date.now()}`);
+            this.state.allTexts.map( (line) => console.log(line));
           }
       }
 
@@ -85,7 +86,7 @@ export default class App extends Component {
       displayText: "speak into your microphone...",
     });
 
-    const duration = 65000;
+    const duration = 15*60*1000;
     const stopTime = Date.now() + duration;
 
     this.sttFromMicCore(recognizer, stopTime);
