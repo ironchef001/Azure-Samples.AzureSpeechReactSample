@@ -3,6 +3,7 @@ import { Container } from "reactstrap";
 import { getTokenOrRefresh } from "./token_util";
 import "./custom.css";
 import { ResultReason } from "microsoft-cognitiveservices-speech-sdk";
+import env from "react-dotenv";
 
 const speechsdk = require("microsoft-cognitiveservices-speech-sdk");
 
@@ -69,10 +70,13 @@ export default class App extends Component {
   }
 
   async sttFromMicContinuous() {
-    const tokenObj = await getTokenOrRefresh();
-    const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
-      tokenObj.authToken,
-      tokenObj.region
+    const speechKey = env.SPEECH_KEY;
+    const speechRegion = env.SPEECH_REGION;
+    console.log(`speechKey: ${speechKey}, speechRegion: ${speechRegion}`);
+
+    const speechConfig = speechsdk.SpeechConfig.fromSubscription(
+      speechKey,
+      speechRegion
     );
     speechConfig.speechRecognitionLanguage = "en-US";
 
@@ -92,6 +96,31 @@ export default class App extends Component {
     this.sttFromMicCore(recognizer, stopTime);
 
   }
+
+  // async sttFromMicContinuous() {
+  //   const tokenObj = await getTokenOrRefresh();
+  //   const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
+  //     tokenObj.authToken,
+  //     tokenObj.region
+  //   );
+  //   speechConfig.speechRecognitionLanguage = "en-US";
+
+  //   const audioConfig = speechsdk.AudioConfig.fromDefaultMicrophoneInput();
+  //   const recognizer = new speechsdk.SpeechRecognizer(
+  //     speechConfig,
+  //     audioConfig
+  //   );
+
+  //   this.setState({
+  //     displayText: "speak into your microphone...",
+  //   });
+
+  //   const duration = 15*60*1000;
+  //   const stopTime = Date.now() + duration;
+
+  //   this.sttFromMicCore(recognizer, stopTime);
+
+  // }
 
   async sttFromMic() {
     const tokenObj = await getTokenOrRefresh();
@@ -169,7 +198,7 @@ export default class App extends Component {
         <h1 className="display-4 mb-3">Speech sample app</h1>
 
         <div className="row main-container">
-          <div className="col-6">
+          <div className="col-12">
             <i
               className="fas fa-microphone fa-lg mr-2"
               //   onClick={() => this.sttFromMic()}
@@ -189,7 +218,8 @@ export default class App extends Component {
               Convert speech to text from an audio file.
             </div>
           </div>
-          <div className="col-6 output-display rounded">
+          <div>&nbsp;</div>
+          <div className="col-12 output-display rounded">
             <code>{this.state.displayText}</code>
           </div>
         </div>
